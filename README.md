@@ -9,11 +9,11 @@ Well, it's nothing yet, I just began to work on this project 💁‍♂️
 
 ## Features
 
-- **Real-time Data Fetching**: Automatically fetch glucose data every 5 minutes.
-- **Historical Data**: View and plot historical glucose data over customizable time ranges.
-- **Terminal Plotting**: Visualize glucose data directly in the terminal using `plotille`.
-- **Configuration Management**: Easily configure Dexcom API credentials and other settings.
-- **Alarms and Notifications**: Set alarms for high/low glucose levels (feature in development).
+- **Real-time Data Fetching**: Automatically fetch glucose data every 5 minutes.❌
+- **Historical Data**: View and plot historical glucose data over customizable time ranges.❌
+- **Terminal Plotting**: Visualize glucose data directly in the terminal using `plotille`.❌
+- **Configuration Management**: Easily configure Dexcom API credentials and other settings.❌
+- **Alarms and Notifications**: Set alarms for high/low glucose levels (feature in development).❌
 
 ## Installation
 
