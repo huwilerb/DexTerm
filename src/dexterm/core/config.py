@@ -9,8 +9,11 @@ STATE_DIR = Path(user_state_dir(APP_NAME, ensure_exists=True))
 
 GLUCOSE_FILE = "glucose_data.json"
 STATE_FILE = "update_state.json"
+SETTINGS_FILE = "settings.json"
 
 GLUCOSE_FILE_PATH = CACHE_DIR.joinpath(GLUCOSE_FILE)
 STATE_FILE_PATH = STATE_DIR.joinpath(STATE_FILE)
+SETTINGS_FILE_PATH = CONFIG_DIR.joinpath(SETTINGS_FILE)
 
-DEXCOM_UPDATE_INTERVAL_MINUTES = 5
+
+CLIENT_UPDATE_INTERVAL_MINUTES = 5

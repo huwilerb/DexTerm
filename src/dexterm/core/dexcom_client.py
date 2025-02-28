@@ -1,18 +1,12 @@
 import os
 from pydexcom import Dexcom, Region
-from pathlib import Path
-from typing import Optional
-from dotenv import load_dotenv
 
 
 class DexcomClient:
-    def __init__(self, env_file: Optional[Path] = None) -> None:
-        if env_file:
-            load_dotenv(env_file)
+    def __init__(self) -> None:
+        username = os.getenv("DEXTERM_USERNAME")
 
-        username = os.getenv("DEXCOM_USERNAME")
-
-        password = os.getenv("DEXCOM_PASSWORD")
+        password = os.getenv("DEXTERM_PASSWORD")
 
         if username is None:
             msg = "No dexcom username found"
@@ -24,5 +18,5 @@ class DexcomClient:
         self.dexcom = Dexcom(
             username=username, password=password, region=Region.OUS)
 
-    def get_glucose_level(self):
+    def fetch_latest_glucose(self):
         return self.dexcom.get_current_glucose_reading()
