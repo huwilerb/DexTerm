@@ -16,11 +16,16 @@ class Settings:
     client_password: Optional[str] = None
 
     def __post_init__(self):
+        self.export_to_env()
+
+    def export_to_env(self) -> None:
         if self.envfile_path is not None:
             load_dotenv(self.envfile_path)
-        if self.client_username:
+        if self.client_username is not None:
+            print(self.client_username)
             os.environ["DEXTERM_USERNAME"] = self.client_username
-        if self.client_password:
+        if self.client_password is not None:
+            print(self.client_password)
             os.environ["DEXTERM_PASSWORD"] = self.client_password
 
     def __rich_repr__(self) -> rich.repr.Result:

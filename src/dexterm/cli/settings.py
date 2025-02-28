@@ -19,18 +19,26 @@ def status():
 
 @app.command()
 def set(
-    username: Annotated[str, typer.Option(help="Username for dexcom API")] = "",
-    envfile: Annotated[
-        str, typer.Option(help="Path to a env file containing creditentials")
+    username: Annotated[str, typer.Option(
+        help="Username for dexcom API")] = "",
+    password: Annotated[str, typer.Option(
+        help="Password for dexom API",
+        hide_input=True)] = "",
+    envfile: Annotated[str, typer.Option(
+        help="Path to a env file containing creditentials")
     ] = "",
 ):
     if username != "":
         settings.client_username = username
 
+    if password != "":
+        settings.client_password = password
+
     if envfile != "":
         settings.envfile_path = envfile
 
     write_user_settings(settings)
+    settings.export_to_env()
 
 
 @app.command()
