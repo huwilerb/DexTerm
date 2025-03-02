@@ -25,12 +25,12 @@ def current():
 
 @app.command()
 def update(
-    print_result: Annotated[bool, typer.Option(
-        help="Print the results once finished"
-    )] = False,
-    password: Annotated[str, typer.Option(
-        help="Pass the password to the settings"
-    )] = ""
+    print_result: Annotated[
+        bool, typer.Option(help="Print the results once finished")
+    ] = False,
+    password: Annotated[
+        str, typer.Option(help="Pass the password to the settings")
+    ] = "",
 ):
     """Update the CGM value to cache"""
     settings = get_settings()

@@ -1,19 +1,25 @@
 from dataclasses import dataclass
 from typing import Optional
 from pathlib import Path
-import yaml
 import os
 import rich.repr
 from dotenv import load_dotenv
+from ruamel.yaml import YAML, yaml_object
 
 from dexterm.core.config import SETTINGS_FILE_PATH
+from dexterm.core.dexcom_client import GlucoseUnit
 
 
+yaml = YAML()
+
+
+@yaml_object(yaml)
 @dataclass
 class Settings:
     envfile_path: Optional[str] = None
     client_username: Optional[str] = None
     client_password: Optional[str] = None
+    glucose_unit: GlucoseUnit = GlucoseUnit.mg_dl
 
     def __post_init__(self):
         self.export_to_env()
@@ -42,26 +48,20 @@ class Settings:
 
         yield "Password set", self.client_password is not None
 
-
-def load_user_settings() -> dict:
-    """read the user settings as dict"""
-    if SETTINGS_FILE_PATH.exists():
-        with SETTINGS_FILE_PATH.open("r") as file:
-            return yaml.safe_load(file)
-    return {}
+        yield "Glucose unit", self.glucose_unit
 
 
 def write_user_settings(settings: Settings) -> None:
-    keys = ["envfile_path", "client_username"]
-
-    data = {key: getattr(settings, key) for key in keys}
-    data = {k: v for k, v in data.items() if v is not None}
-
-    with SETTINGS_FILE_PATH.open("w") as file:
-        yaml.safe_dump(data, file)
+    with SETTINGS_FILE_PATH.open("w") as f:
+        yaml.dump(settings, f)
 
 
 def get_settings() -> Settings:
     """Get the settings as an object"""
-    data = load_user_settings()
-    return Settings(**data)
+    with SETTINGS_FILE_PATH.open("r") as f:
+        data = yaml.load(f)
+
+    if data is None:
+        return Settings()
+    else:
+        return data

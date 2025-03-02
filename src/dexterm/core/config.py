@@ -9,7 +9,7 @@ STATE_DIR = Path(user_state_dir(APP_NAME, ensure_exists=True))
 
 GLUCOSE_FILE = "glucose_data.json"
 STATE_FILE = "update_state.json"
-SETTINGS_FILE = "settings.json"
+SETTINGS_FILE = "settings.yaml"
 
 GLUCOSE_FILE_PATH = CACHE_DIR.joinpath(GLUCOSE_FILE)
 STATE_FILE_PATH = STATE_DIR.joinpath(STATE_FILE)

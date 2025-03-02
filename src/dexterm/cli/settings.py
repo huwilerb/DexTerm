@@ -1,10 +1,13 @@
 from pathlib import Path
+from typing import Optional
+from click import Choice
 import typer
 from rich import print
 from typing_extensions import Annotated
 
 from dexterm.core.settings import write_user_settings, get_settings
 from dexterm.core.config import SETTINGS_FILE_PATH
+from dexterm.core.dexcom_client import GlucoseUnit
 
 app = typer.Typer()
 
@@ -19,14 +22,17 @@ def status():
 
 @app.command()
 def set(
-    username: Annotated[str, typer.Option(
-        help="Username for dexcom API")] = "",
-    password: Annotated[str, typer.Option(
-        help="Password for dexom API",
-        hide_input=True)] = "",
-    envfile: Annotated[str, typer.Option(
-        help="Path to a env file containing creditentials")
+    username: Annotated[str, typer.Option(help="Username for dexcom API")] = "",
+    password: Annotated[
+        str, typer.Option(help="Password for dexom API", hide_input=True)
     ] = "",
+    envfile: Annotated[
+        str, typer.Option(help="Path to a env file containing creditentials")
+    ] = "",
+    glucose_unit: Annotated[
+        Optional[GlucoseUnit],
+        typer.Option(help="Unit for the glucose reading."),
+    ] = None,
 ):
     if username != "":
         settings.client_username = username
@@ -36,6 +42,9 @@ def set(
 
     if envfile != "":
         settings.envfile_path = envfile
+
+    if glucose_unit is not None:
+        settings.glucose_unit = glucose_unit
 
     write_user_settings(settings)
     settings.export_to_env()
