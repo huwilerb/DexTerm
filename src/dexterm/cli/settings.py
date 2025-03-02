@@ -1,6 +1,5 @@
 from pathlib import Path
 from typing import Optional
-from click import Choice
 import typer
 from rich import print
 from typing_extensions import Annotated
@@ -22,28 +21,32 @@ def status():
 
 @app.command()
 def set(
-    username: Annotated[str, typer.Option(help="Username for dexcom API")] = "",
+    username: Annotated[
+        Optional[str], typer.Option(help="Username for dexcom API")
+    ] = None,
     password: Annotated[
-        str, typer.Option(help="Password for dexom API", hide_input=True)
-    ] = "",
+        Optional[str], typer.Option(
+            help="Password for dexom API", hide_input=True)
+    ] = None,
     envfile: Annotated[
-        str, typer.Option(help="Path to a env file containing creditentials")
-    ] = "",
+        Optional[str], typer.Option(
+            help="Path to a env file containing creditentials")
+    ] = None,
     glucose_unit: Annotated[
         Optional[GlucoseUnit],
         typer.Option(help="Unit for the glucose reading."),
     ] = None,
 ):
-    if username != "":
+    if username:
         settings.client_username = username
 
-    if password != "":
+    if password:
         settings.client_password = password
 
-    if envfile != "":
+    if envfile:
         settings.envfile_path = envfile
 
-    if glucose_unit is not None:
+    if glucose_unit:
         settings.glucose_unit = glucose_unit
 
     write_user_settings(settings)
