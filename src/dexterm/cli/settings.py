@@ -29,8 +29,15 @@ def set(
             help="Password for dexom API", hide_input=True)
     ] = None,
     envfile: Annotated[
-        Optional[str], typer.Option(
-            help="Path to a env file containing creditentials")
+        Optional[Path],
+        typer.Option(
+            help="Path to a env file containing creditentials",
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+            readable=True,
+            resolve_path=True,
+        ),
     ] = None,
     glucose_unit: Annotated[
         Optional[GlucoseUnit],
@@ -44,7 +51,7 @@ def set(
         settings.client_password = password
 
     if envfile:
-        settings.envfile_path = envfile
+        settings.envfile_path = str(envfile)
 
     if glucose_unit:
         settings.glucose_unit = glucose_unit

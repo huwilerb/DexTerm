@@ -16,7 +16,7 @@ yaml = YAML()
 @yaml_object(yaml)
 @dataclass
 class Settings:
-    envfile_path: Optional[str] = None
+    envfile_path: Optional[Path] = None
     client_username: Optional[str] = None
     client_password: Optional[str] = None
     glucose_unit: GlucoseUnit = GlucoseUnit.mg_dl
@@ -58,6 +58,8 @@ def write_user_settings(settings: Settings) -> None:
 
 def get_settings() -> Settings:
     """Get the settings as an object"""
+    if not SETTINGS_FILE_PATH.exists():
+        return Settings()
     with SETTINGS_FILE_PATH.open("r") as f:
         data = yaml.load(f)
 
