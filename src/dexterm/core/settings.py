@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Literal, Optional, Tuple
+from typing import Any, Optional, Tuple
 from pathlib import Path
 import os
 import rich.repr
