@@ -20,7 +20,7 @@ class Settings:
     client_username: Optional[str] = None
     client_password: Optional[str] = None
     glucose_unit: Optional[GlucoseUnit] = None
-    user_region: UserRegion = UserRegion.US
+    user_region: Optional[UserRegion] = None
 
     def __post_init__(self):
         self.export_to_env()

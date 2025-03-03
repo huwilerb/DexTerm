@@ -5,7 +5,7 @@ from rich import print
 
 from dexterm.core.settings import get_settings, write_user_settings
 from dexterm.core.config import SETTINGS_FILE_PATH
-from dexterm.core.dexcom_client import GlucoseUnit
+from dexterm.core.dexcom_client import GlucoseUnit, UserRegion
 
 app = typer.Typer()
 
@@ -86,4 +86,22 @@ def glucose_unit(
 
     settings = get_settings()
     settings.glucose_unit = _glucose_unit
+    write_user_settings(settings)
+
+
+@app.command()
+def user_region(
+    user_region: Annotated[
+        Optional[UserRegion],
+        typer.Argument(help="Region of the user for Dexcom API"),
+    ] = None,
+    reset: Annotated[bool, typer.Option()] = False,
+):
+    """Update the user region. --reset to factory reset"""
+    if reset:
+        _user_region = None
+    else:
+        _user_region = user_region
+    settings = get_settings()
+    settings.user_region = _user_region
     write_user_settings(settings)
