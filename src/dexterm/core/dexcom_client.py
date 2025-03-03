@@ -38,3 +38,18 @@ class GlucoseUnit(str, Enum):
     @classmethod
     def from_yaml(cls, constructor, node):
         return cls[node.value]
+
+
+@yaml_object(yaml)
+class UserRegion(str, Enum):
+    US = "us"
+    OUS = "ous"
+    JP = "jp"
+
+    @classmethod
+    def to_yaml(cls, representer, node):
+        return representer.represent_scalar(f"!{cls.__name__}", "{.name}".format(node))
+
+    @classmethod
+    def from_yaml(cls, constructor, node):
+        return cls[node.value]
