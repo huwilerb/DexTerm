@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Any, Literal, Optional, Tuple
 from pathlib import Path
 import os
 import rich.repr
@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from ruamel.yaml import YAML, yaml_object
 
 from dexterm.core.config import SETTINGS_FILE_PATH
-from dexterm.core.dexcom_client import GlucoseUnit
+from dexterm.core.dexcom_client import GlucoseUnit, UserRegion
 
 
 yaml = YAML()
@@ -19,7 +19,8 @@ class Settings:
     envfile_path: Optional[Path] = None
     client_username: Optional[str] = None
     client_password: Optional[str] = None
-    glucose_unit: GlucoseUnit = GlucoseUnit.mg_dl
+    glucose_unit: Optional[GlucoseUnit] = None
+    user_region: UserRegion = UserRegion.US
 
     def __post_init__(self):
         self.export_to_env()
@@ -67,3 +68,16 @@ def get_settings() -> Settings:
         return Settings()
     else:
         return data
+
+
+def update_settings(key: str, new_value: Any) -> Tuple[Any, Any]:
+    settings = get_settings()
+
+    value = getattr(settings, key, None)
+
+    if value is None:
+        raise ValueError
+
+    setattr(settings, key, new_value)
+
+    return (value, new_value)

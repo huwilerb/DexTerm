@@ -1,36 +1,54 @@
 from pathlib import Path
-from typing import Optional
 import typer
+from typing import Annotated, Optional
 from rich import print
-from typing_extensions import Annotated
 
-from dexterm.core.settings import write_user_settings, get_settings
+from dexterm.core.settings import get_settings, write_user_settings
 from dexterm.core.config import SETTINGS_FILE_PATH
 from dexterm.core.dexcom_client import GlucoseUnit
 
 app = typer.Typer()
 
-settings = get_settings()
-
 
 @app.command()
-def status():
-    """Display the current status of the settings"""
+def show():
+    """Display the current settings"""
+    settings = get_settings()
     print(settings)
 
 
 @app.command()
-def set(
-    username: Annotated[
-        Optional[str], typer.Option(help="Username for dexcom API")
-    ] = None,
-    password: Annotated[
-        Optional[str], typer.Option(
-            help="Password for dexom API", hide_input=True)
-    ] = None,
+def reset():
+    """Reset the settings to default"""
+    reset = typer.confirm("Are you sure you want to reset user settings ?")
+
+    if not reset:
+        typer.Abort()
+
+    Path(SETTINGS_FILE_PATH).unlink(missing_ok=True)
+
+
+@app.command()
+def username(
+    username: Annotated[Optional[str], typer.Argument()] = None,
+    reset: Annotated[bool, typer.Option()] = False,
+):
+    """Update the client username. --reset to factory reset"""
+    if reset:
+        _username = None
+    else:
+        _username = username
+
+    settings = get_settings()
+    settings.client_username = _username
+    write_user_settings(settings)
+
+
+@app.command()
+def envfile(
     envfile: Annotated[
         Optional[Path],
-        typer.Option(
+        typer.Argument(
             help="Path to a env file containing creditentials",
             exists=True,
             file_okay=True,
@@ -39,32 +57,33 @@ def set(
             resolve_path=True,
         ),
     ] = None,
-    glucose_unit: Annotated[
-        Optional[GlucoseUnit],
-        typer.Option(help="Unit for the glucose reading."),
-    ] = None,
+    reset: Annotated[bool, typer.Option()] = False,
 ):
-    if username:
-        settings.client_username = username
+    """Update the envfile. --reset to factory reset"""
+    if reset:
+        _envfile = None
+    else:
+        _envfile = envfile
 
-    if password:
-        settings.client_password = password
-
-    if envfile:
-        settings.envfile_path = str(envfile)
-
-    if glucose_unit:
-        settings.glucose_unit = glucose_unit
-
+    settings = get_settings()
+    settings.envfile_path = _envfile
     write_user_settings(settings)
-    settings.export_to_env()
 
 
 @app.command()
-def reset():
-    reset = typer.confirm("Are you sure you want to reset user settings ?")
+def glucose_unit(
+    glucose_unit: Annotated[
+        Optional[GlucoseUnit],
+        typer.Argument(help="Unit for the glucose reading."),
+    ] = None,
+    reset: Annotated[bool, typer.Option()] = False,
+):
+    """Update the glucose unit. --reset to factory reset"""
+    if reset:
+        _glucose_unit = GlucoseUnit.mg_dl
+    else:
+        _glucose_unit = glucose_unit
 
-    if not reset:
-        typer.Abort()
-
-    Path(SETTINGS_FILE_PATH).unlink(missing_ok=True)
+    settings = get_settings()
+    settings.glucose_unit = _glucose_unit
+    write_user_settings(settings)
