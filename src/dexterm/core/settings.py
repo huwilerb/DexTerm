@@ -71,13 +71,21 @@ def get_settings() -> Settings:
 
 
 def update_settings(key: str, new_value: Any) -> Tuple[Any, Any]:
+    """Update a key of settings"""
     settings = get_settings()
 
-    value = getattr(settings, key, None)
+    value = getattr(settings, key, "key_error")
 
-    if value is None:
+    if value == "key_error":
         raise ValueError
 
     setattr(settings, key, new_value)
 
+    write_user_settings(settings)
+
     return (value, new_value)
+
+
+if __name__ == "__main__":
+    settings = get_settings()
+    print(settings)

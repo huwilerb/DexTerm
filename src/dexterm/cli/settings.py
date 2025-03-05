@@ -3,11 +3,12 @@ import typer
 from typing import Annotated, Optional
 from rich import print
 
-from dexterm.core.settings import get_settings, write_user_settings
+from dexterm.core.settings import get_settings, update_settings
 from dexterm.core.config import SETTINGS_FILE_PATH
 from dexterm.core.dexcom_client import GlucoseUnit, UserRegion
 
 app = typer.Typer()
+state = {"verbose": False}
 
 
 @app.command()
@@ -27,6 +28,9 @@ def reset():
 
     Path(SETTINGS_FILE_PATH).unlink(missing_ok=True)
 
+    if state["verbose"]:
+        print(f"Removed envfile: {SETTINGS_FILE_PATH}")
+
 
 @app.command()
 def username(
@@ -39,9 +43,10 @@ def username(
     else:
         _username = username
 
-    settings = get_settings()
-    settings.client_username = _username
-    write_user_settings(settings)
+    old_value, new_value = update_settings("client_username", _username)
+
+    if state["verbose"]:
+        print(f"Update username from {old_value} to {new_value}")
 
 
 @app.command()
@@ -65,9 +70,10 @@ def envfile(
     else:
         _envfile = envfile
 
-    settings = get_settings()
-    settings.envfile_path = _envfile
-    write_user_settings(settings)
+    old_value, new_value = update_settings("envfile", _envfile)
+
+    if state["verbose"]:
+        print(f"Updated envfile from '{old_value}' to '{new_value}'")
 
 
 @app.command()
@@ -84,9 +90,10 @@ def glucose_unit(
     else:
         _glucose_unit = glucose_unit
 
-    settings = get_settings()
-    settings.glucose_unit = _glucose_unit
-    write_user_settings(settings)
+    old_value, new_value = update_settings("glucose_unit", _glucose_unit)
+
+    if state["verbose"]:
+        print(f"Updated glucose_unit from {old_value} to {new_value}")
 
 
 @app.command()
@@ -102,6 +109,14 @@ def user_region(
         _user_region = None
     else:
         _user_region = user_region
-    settings = get_settings()
-    settings.user_region = _user_region
-    write_user_settings(settings)
+
+    old_value, new_value = update_settings("user_region", _user_region)
+
+    if state["verbose"]:
+        print(f"Updated glucose_unit from {old_value} to {new_value}")
+
+
+@app.callback()
+def main(verbose: bool = False):
+    if verbose:
+        state["verbose"] = True
