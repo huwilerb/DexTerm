@@ -1,25 +1,35 @@
 # DexTerm 🩸🖥️
 
+![](./imgs/dexterm.jpeg)
 DexTerm is a Terminal User Interface (TUI) and a Command Line Interface (CLI)
 designed to monitor and visualize glucose levels using the Dexcom API.
 It allows users to fetch, display, and plot glucose data directly in the terminal,
 providing a seamless experience for managing and tracking blood sugar levels.
 
-Well, it's nothing yet, I just began to work on this project 💁‍♂️
+> [!warning]
+> This library is still a work in progress and not "production ready". Feel free
+> to try it, to contribute and report bugs.
 
 ## Features
 
+- **Configuration Management**: Easily configure Dexcom API credentials and
+  other settings. ✅
+- **Fetch last measurement**: Fetch last measurement with one CLI command. ✅
+- **Read last measurement**: Read last fetched measurement and use them with other
+  terminal tools. ✅
 - **Real-time Data Fetching**: Automatically fetch glucose data every 5 minutes.❌
-- **Historical Data**: View and plot historical glucose data over customizable time ranges.❌
-- **Terminal Plotting**: Visualize glucose data directly in the terminal using `plotille`.❌
-- **Configuration Management**: Easily configure Dexcom API credentials and other settings.❌
-- **Alarms and Notifications**: Set alarms for high/low glucose levels (feature in development).❌
+- **Historical Data**: View and plot historical glucose data over customizable
+  time ranges.❌
+- **Terminal Plotting**: Visualize glucose data directly in the terminal using
+  `plotille`.❌
+- **Alarms and Notifications**: Set alarms for high/low glucose levels
+  (feature in development).❌
 
 ## Installation
 
 ### Prerequisites
 
-- Python 3.7 or higher
+- Python 3.9 or higher
 - `uv` for dependency management
 
 ### Steps
@@ -39,4 +49,11 @@ Well, it's nothing yet, I just began to work on this project 💁‍♂️
    ```
 
 3. **Configure Dexcom API credentials**
-   To be completed
+
+   The CLI has an endpoint for configuration. You can show help with:
+
+   ```bash
+   dexterm settings --help
+   ```
+
+   More information about the CLI API in the documentation.
