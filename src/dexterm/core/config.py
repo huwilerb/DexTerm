@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from platformdirs import user_cache_dir, user_config_dir, user_state_dir
+from pydexcom import MMOL_L_CONVERSION_FACTOR
 
 APP_NAME = "dexterm"
 CONFIG_DIR = Path(user_config_dir(APP_NAME, ensure_exists=True))
@@ -17,3 +18,4 @@ SETTINGS_FILE_PATH = CONFIG_DIR.joinpath(SETTINGS_FILE)
 
 
 CLIENT_UPDATE_INTERVAL_MINUTES = 5
+MMOL_L_CONVERSION_FACTOR = MMOL_L_CONVERSION_FACTOR

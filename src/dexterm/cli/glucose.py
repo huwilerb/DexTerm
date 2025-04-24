@@ -1,9 +1,9 @@
 import typer
-import os
 
 from dexterm.core.data import read_glucose_data, update_glucose_data
-from dexterm.core.settings import get_settings
 from typing_extensions import Annotated
+
+from dexterm.core.settings import get_settings
 
 
 app = typer.Typer()
@@ -36,10 +36,9 @@ def update(
     settings = get_settings()
 
     if password != "":
-        settings.client_password = password
-        settings.export_to_env()
+        settings.creditentials.client_password = password
 
-    data = update_glucose_data()
+    data = update_glucose_data(settings)
 
     if print_result:
         typer.echo(data)

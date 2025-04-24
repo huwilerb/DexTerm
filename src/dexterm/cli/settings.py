@@ -29,7 +29,9 @@ def reset():
     Path(SETTINGS_FILE_PATH).unlink(missing_ok=True)
 
     if state["verbose"]:
-        print(f"Removed envfile: {SETTINGS_FILE_PATH}")
+        print(f"""
+        Removed settings file: {SETTINGS_FILE_PATH}
+        Default will be used""")
 
 
 @app.command()
@@ -43,7 +45,11 @@ def username(
     else:
         _username = username
 
-    old_value, new_value = update_settings("client_username", _username)
+    old_value, new_value = update_settings(
+        "creditentials",
+        "client_username",
+        _username,
+    )
 
     if state["verbose"]:
         print(f"Update username from {old_value} to {new_value}")
@@ -68,9 +74,13 @@ def envfile(
     if reset:
         _envfile = None
     else:
-        _envfile = envfile
+        _envfile = str(envfile)
 
-    old_value, new_value = update_settings("envfile", _envfile)
+    old_value, new_value = update_settings(
+        "creditentials",
+        "envfile_path",
+        _envfile,
+    )
 
     if state["verbose"]:
         print(f"Updated envfile from '{old_value}' to '{new_value}'")
@@ -90,7 +100,11 @@ def glucose_unit(
     else:
         _glucose_unit = glucose_unit
 
-    old_value, new_value = update_settings("glucose_unit", _glucose_unit)
+    old_value, new_value = update_settings(
+        "metrics",
+        "glucose_unit",
+        _glucose_unit,
+    )
 
     if state["verbose"]:
         print(f"Updated glucose_unit from {old_value} to {new_value}")
@@ -110,7 +124,11 @@ def user_region(
     else:
         _user_region = user_region
 
-    old_value, new_value = update_settings("user_region", _user_region)
+    old_value, new_value = update_settings(
+        "creditentials",
+        "user_region",
+        _user_region,
+    )
 
     if state["verbose"]:
         print(f"Updated glucose_unit from {old_value} to {new_value}")

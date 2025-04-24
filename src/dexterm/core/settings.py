@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Optional, Tuple
+from typing import Any, Literal, Optional, Tuple
 from pathlib import Path
 import os
 import rich.repr
@@ -15,41 +15,86 @@ yaml = YAML()
 
 @yaml_object(yaml)
 @dataclass
-class Settings:
-    envfile_path: Optional[Path] = None
+class Creditentials:
+    """Store all creditentials settings and logic"""
+
+    envfile_path: Optional[str] = None
     client_username: Optional[str] = None
     client_password: Optional[str] = None
-    glucose_unit: Optional[GlucoseUnit] = None
     user_region: Optional[UserRegion] = None
 
     def __post_init__(self):
-        self.export_to_env()
+        self.load_from_dotenv()
 
-    def export_to_env(self) -> None:
-        if self.envfile_path is not None:
+    def load_from_dotenv(self) -> None:
+        if self.envfile_path is None:
+            return
+        if Path(self.envfile_path).exists():
             load_dotenv(self.envfile_path)
-        if self.client_username is not None:
-            os.environ["DEXTERM_USERNAME"] = self.client_username
-        if self.client_password is not None:
-            os.environ["DEXTERM_PASSWORD"] = self.client_password
+            username = os.getenv("DEXTERM_USERNAME")
+            password = os.getenv("DEXTERM_PASSWORD")
+        else:
+            msg = f"Provided envfile do not exists: {self.envfile_path}"
+            raise FileNotFoundError(msg)
+
+        if username is not None:
+            self.client_username = username
+        if password is not None:
+            self.client_password = password
+
+    @property
+    def is_valid(self) -> bool:
+        if self.client_username is None:
+            return False
+        if self.client_password is None:
+            return False
+        if self.user_region is None:
+            return False
+
+        return True
+
+
+@yaml_object(yaml)
+@dataclass
+class Metrics:
+    """Store all metrics settings"""
+
+    glucose_unit: Optional[GlucoseUnit] = GlucoseUnit.mg_dl
+
+
+@yaml_object(yaml)
+@dataclass
+class Settings:
+    creditentials: Creditentials = Creditentials()
+    metrics: Metrics = Metrics()
 
     def __rich_repr__(self) -> rich.repr.Result:
-        if self.envfile_path is None:
+        envfile_path = self.creditentials.envfile_path
+        if envfile_path is None:
             yield "Env file set", False
         else:
             yield "Env file set", True
-            yield "Env file path", self.envfile_path
-            yield "Env file exists", Path(self.envfile_path).exists()
+            yield "Env file path", envfile_path
+            yield "Env file exists", Path(envfile_path).exists()
 
-        if self.client_username is None:
+        username = self.creditentials.client_username
+        if username is None:
             yield "Username set", False
         else:
             yield "Username set", True
-            yield "Username value", self.client_username
+            yield "Username value", username
 
-        yield "Password set", self.client_password is not None
+        yield "Password set", self.creditentials.client_password is not None
 
-        yield "Glucose unit", self.glucose_unit
+        user_region = self.creditentials.user_region
+        if user_region is None:
+            yield "User region set", False
+        else:
+            yield "User region set", True
+            yield "USer region value", user_region
+
+        yield "Creditentails validity", self.creditentials.is_valid
+        yield "Glucose unit", self.metrics.glucose_unit
 
 
 def write_user_settings(settings: Settings) -> None:
@@ -70,16 +115,25 @@ def get_settings() -> Settings:
         return data
 
 
-def update_settings(key: str, new_value: Any) -> Tuple[Any, Any]:
+def update_settings(
+    componant: Literal["creditentials", "metrics"],
+    key: str,
+    new_value: Any,
+) -> Tuple[Any, Any]:
     """Update a key of settings"""
-    settings = get_settings()
 
-    value = getattr(settings, key, "key_error")
+    settings = get_settings()
+    comp = getattr(settings, componant, None)
+    if comp is None:
+        raise ValueError
+
+    value = getattr(comp, key, "key_error")
 
     if value == "key_error":
         raise ValueError
 
-    setattr(settings, key, new_value)
+    setattr(comp, key, new_value)
+    setattr(settings, componant, comp)
 
     write_user_settings(settings)
 
