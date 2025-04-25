@@ -46,7 +46,7 @@ def username(
         _username = username
 
     old_value, new_value = update_settings(
-        "creditentials",
+        "credentials",
         "client_username",
         _username,
     )
@@ -77,7 +77,7 @@ def envfile(
         _envfile = str(envfile)
 
     old_value, new_value = update_settings(
-        "creditentials",
+        "credentials",
         "envfile_path",
         _envfile,
     )
@@ -125,7 +125,7 @@ def user_region(
         _user_region = user_region
 
     old_value, new_value = update_settings(
-        "creditentials",
+        "credentials",
         "user_region",
         _user_region,
     )
