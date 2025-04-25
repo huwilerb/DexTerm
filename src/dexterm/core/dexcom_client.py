@@ -1,45 +1,23 @@
 from typing import Optional, Protocol
 from pydexcom import Dexcom
-from enum import Enum
-from ruamel.yaml import YAML, yaml_object
+from ..utils.yaml_utils import YAMLSerializableEnum
 
+from ruamel.yaml import YAML, yaml_object
 
 yaml = YAML()
 
 
 @yaml_object(yaml)
-class GlucoseUnit(str, Enum):
+class GlucoseUnit(str, YAMLSerializableEnum):
     mmol_l = "mmol_l"
     mg_dl = "mg_dl"
 
-    @classmethod
-    def to_yaml(cls, representer, node):
-        return representer.represent_scalar(
-            f"!{cls.__name__}",
-            "{.name}".format(node),
-        )
-
-    @classmethod
-    def from_yaml(cls, constructor, node):
-        return cls[node.value]
-
 
 @yaml_object(yaml)
-class UserRegion(str, Enum):
+class UserRegion(str, YAMLSerializableEnum):
     US = "us"
     OUS = "ous"
     JP = "jp"
-
-    @classmethod
-    def to_yaml(cls, representer, node):
-        return representer.represent_scalar(
-            f"!{cls.__name__}",
-            "{.name}".format(node),
-        )
-
-    @classmethod
-    def from_yaml(cls, constructor, node):
-        return cls[node.value]
 
 
 class Creditentials(Protocol):
