@@ -9,13 +9,6 @@ class YAMLSerializableEnum(Enum):
     def to_yaml(cls, representer: Any, node: Any) -> Any:
         """
         Convert enum instance to YAML representation.
-
-        Args:
-            representer: YAML representer object
-            node: The enum instance to convert
-
-        Returns:
-            YAML scalar node
         """
         return representer.represent_scalar(
             f"!{cls.__name__}",
