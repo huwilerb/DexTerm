@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Literal, Optional, Tuple
 from pathlib import Path
 import os
@@ -65,8 +65,8 @@ class Metrics:
 @yaml_object(yaml)
 @dataclass
 class Settings:
-    creditentials: Creditentials = Creditentials()
-    metrics: Metrics = Metrics()
+    creditentials: Creditentials = field(default_factory=Creditentials)
+    metrics: Metrics = field(default_factory=Metrics)
 
     def __rich_repr__(self) -> rich.repr.Result:
         envfile_path = self.creditentials.envfile_path
