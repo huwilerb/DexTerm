@@ -60,7 +60,7 @@ def envfile(
     envfile: Annotated[
         Optional[Path],
         typer.Argument(
-            help="Path to a env file containing creditentials",
+            help="Path to a env file containing credentials",
             exists=True,
             file_okay=True,
             dir_okay=False,
