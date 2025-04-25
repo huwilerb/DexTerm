@@ -15,8 +15,8 @@ yaml = YAML()
 
 @yaml_object(yaml)
 @dataclass
-class Creditentials:
-    """Store all creditentials settings and logic"""
+class Credentials:
+    """Store all crendentials settings and logic"""
 
     envfile_path: Optional[str] = None
     client_username: Optional[str] = None
@@ -59,17 +59,17 @@ class Creditentials:
 class Metrics:
     """Store all metrics settings"""
 
-    glucose_unit: Optional[GlucoseUnit] = GlucoseUnit.mg_dl
+    glucose_unit: GlucoseUnit = GlucoseUnit.mg_dl
 
 
 @yaml_object(yaml)
 @dataclass
 class Settings:
-    creditentials: Creditentials = field(default_factory=Creditentials)
+    credentials: Credentials = field(default_factory=Credentials)
     metrics: Metrics = field(default_factory=Metrics)
 
     def __rich_repr__(self) -> rich.repr.Result:
-        envfile_path = self.creditentials.envfile_path
+        envfile_path = self.credentials.envfile_path
         if envfile_path is None:
             yield "Env file set", False
         else:
@@ -77,24 +77,24 @@ class Settings:
             yield "Env file path", envfile_path
             yield "Env file exists", Path(envfile_path).exists()
 
-        username = self.creditentials.client_username
+        username = self.credentials.client_username
         if username is None:
             yield "Username set", False
         else:
             yield "Username set", True
             yield "Username value", username
 
-        yield "Password set", self.creditentials.client_password is not None
+        yield "Password set", self.credentials.client_password is not None
 
-        user_region = self.creditentials.user_region
+        user_region = self.credentials.user_region
         if user_region is None:
             yield "User region set", False
         else:
             yield "User region set", True
-            yield "USer region value", user_region
+            yield "User region value", user_region.value
 
-        yield "Creditentails validity", self.creditentials.is_valid
-        yield "Glucose unit", self.metrics.glucose_unit
+        yield "Credentails validity", self.credentials.is_valid
+        yield "Glucose unit value", self.metrics.glucose_unit.value
 
 
 def write_user_settings(settings: Settings) -> None:
@@ -116,7 +116,7 @@ def get_settings() -> Settings:
 
 
 def update_settings(
-    componant: Literal["creditentials", "metrics"],
+    componant: Literal["credentials", "metrics"],
     key: str,
     new_value: Any,
 ) -> Tuple[Any, Any]:

@@ -4,7 +4,7 @@ from typing import Optional
 from dexterm.core.config import GLUCOSE_FILE_PATH
 from dexterm.core.dexcom_client import DexcomClient
 from dexterm.core.settings import (
-    Creditentials,
+    Credentials,
     Metrics,
     GlucoseUnit,
     Settings,
@@ -47,7 +47,7 @@ def transform_reading_data(metrics: Metrics, data: GlucoseReading) -> dict:
     return results
 
 
-def fetch_latest_glucose(creditentials: Creditentials) -> GlucoseReading:
+def fetch_latest_glucose(creditentials: Credentials) -> GlucoseReading:
     """Fetch the latest glucose reading from API"""
     client = DexcomClient(creditentials)
     data = client.fetch_latest_glucose()
@@ -60,7 +60,7 @@ def fetch_latest_glucose(creditentials: Creditentials) -> GlucoseReading:
 def update_glucose_data(settings: Settings) -> dict:
     """Update the glucose data in cache"""
 
-    glucose_data = fetch_latest_glucose(settings.creditentials)
+    glucose_data = fetch_latest_glucose(settings.credentials)
     formated_data = transform_reading_data(settings.metrics, glucose_data)
     write_glucose_data(formated_data)
 

@@ -20,7 +20,7 @@ class UserRegion(str, YAMLSerializableEnum):
     JP = "jp"
 
 
-class Creditentials(Protocol):
+class Credentials(Protocol):
     client_username: Optional[str]
     client_password: Optional[str]
     user_region: Optional[UserRegion]
@@ -30,13 +30,13 @@ class Creditentials(Protocol):
 
 
 class DexcomClient:
-    def __init__(self, creditentials: Creditentials) -> None:
-        if not creditentials.is_valid:
+    def __init__(self, credentials: Credentials) -> None:
+        if not credentials.is_valid:
             raise ValueError
         self.dexcom = Dexcom(
-            username=creditentials.client_username,
-            password=creditentials.client_password,  # type: ignore
-            region=creditentials.user_region,  # type: ignore
+            username=credentials.client_username,
+            password=credentials.client_password,  # type: ignore
+            region=credentials.user_region,  # type: ignore
         )
 
     def fetch_latest_glucose(self):
